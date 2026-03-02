@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Kate ♡</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:    #1a0f0a;
+  --rose:   #c8596a;
+  --blush:  #f5dde2;
+  --soft:   #fdf6f0;
+  --cream:  #fffaf7;
+  --gold:   #c9a84c;
+  --mauve:  #8c4a58;
+  --light:  #f9eef2;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+canvas#bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 24px 120px;
+}
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 0 60px;
+  gap: 0;
+}
+
+.hero-eyebrow {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  color: var(--rose);
+  opacity: 0;
+  animation: up .9s .2s forwards;
+  margin-bottom: 16px;
+}
+
+.hero-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(5.5rem, 18vw, 11rem);
+  font-weight: 300;
+  font-style: italic;
+  line-height: .92;
+  color: var(--ink);
+  letter-spacing: -.02em;
+  opacity: 0;
+  animation: up 1s .4s forwards;
+  position: relative;
+}
+.hero-name .accent { color: var(--rose); }
+.hero-name sup {
+  font-size: .22em;
+  color: var(--rose);
+  vertical-align: super;
+  font-style: normal;
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.4); }
+}
+
+.hero-last {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 6vw, 3.5rem);
+  font-weight: 300;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--mauve);
+  opacity: 0;
+  animation: up .9s .65s forwards;
+  margin-top: 8px;
+}
+
+.hero-rule {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--rose), transparent);
+  margin: 32px auto;
+  opacity: 0;
+  animation: fadeIn .8s .9s forwards;
+}
+
+.hero-tagline {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  color: var(--mauve);
+  opacity: 0;
+  animation: up .9s 1.1s forwards;
+  line-height: 1.6;
+}
+
+.proud-section {
+  padding: 80px 0 40px;
+  text-align: center;
+}
+
+.section-tag {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .62rem;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 18px;
+  display: block;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.section-body {
+  font-size: clamp(.88rem, 2vw, 1rem);
+  line-height: 1.9;
+  color: #5a3a42;
+  font-weight: 300;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 50px 0;
+}
+@media (max-width: 520px) { .cards { grid-template-columns: 1fr; } }
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px 30px;
+  border: 1px solid rgba(200,89,106,.14);
+  box-shadow: 0 4px 40px rgba(200,89,106,.07);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: transform .3s, box-shadow .3s;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 50px rgba(200,89,106,.14);
+}
+.card.visible { animation: up .7s forwards; }
+.card:nth-child(2) { animation-delay: .15s; }
+
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--light);
+  border: 1px solid rgba(200,89,106,.2);
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: .6rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 18px;
+}
+
+.card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.card p {
+  font-size: .85rem;
+  line-height: 1.8;
+  color: #6b4450;
+  font-weight: 300;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(200,89,106,.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.letter-wrap {
+  margin: 60px 0;
+  background: #fff;
+  border-radius: 24px;
+  padding: clamp(36px,6vw,64px);
+  border: 1px solid rgba(200,89,106,.12);
+  box-shadow: 0 8px 60px rgba(200,89,106,.09);
+  position: relative;
+  opacity: 0;
+}
+.letter-wrap.visible { animation: up .8s forwards; }
+
+.letter-deco {
+  font-family: 'Great Vibes', cursive;
+  font-size: 5rem;
+  color: var(--blush);
+  position: absolute;
+  top: 10px; left: 24px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.letter-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.05rem, 2.5vw, 1.28rem);
+  font-style: italic;
+  line-height: 2;
+  color: var(--ink);
+  font-weight: 300;
+}
+.letter-body strong {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--rose);
+}
+
+.letter-sig {
+  margin-top: 32px;
+  text-align: right;
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.8rem;
+  color: var(--rose);
+}
+
+.promises {
+  margin: 60px 0;
+  opacity: 0;
+}
+.promises.visible { animation: up .8s forwards; }
+
+.promise-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
+  font-style: italic;
+  font-weight: 400;
+  text-align: center;
+  color: var(--ink);
+  margin-bottom: 36px;
+}
+
+.promise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(200,89,106,.14);
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.promise-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 30px;
+  border-bottom: 1px solid rgba(200,89,106,.08);
+  transition: background .2s;
+}
+.promise-item:last-child { border-bottom: none; }
+.promise-item:hover { background: var(--light); }
+
+.promise-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-style: italic;
+  color: var(--blush);
+  font-weight: 600;
+  line-height: 1;
+  min-width: 36px;
+}
+
+.promise-content h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.promise-content p {
+  font-size: .82rem;
+  line-height: 1.7;
+  color: #6b4450;
+  font-weight: 300;
+}
+
+.final {
+  text-align: center;
+  padding: 60px 0 0;
+  opacity: 0;
+}
+.final.visible { animation: up .8s forwards; }
+
+.final-big {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 9vw, 5.5rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+.final-big span { color: var(--rose); }
+
+.final-sub {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  color: var(--mauve);
+  margin-bottom: 40px;
+}
+
+.final-heart {
+  font-size: 3.5rem;
+  animation: pulse 1.8s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.trail {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  font-size: .8rem;
+  animation: trailFade .8s ease forwards;
+}
+@keyframes trailFade {
+  0%   { opacity: .9; transform: translateY(0) scale(1); }
+  100% { opacity: 0;  transform: translateY(-50px) scale(.3); }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="page">
+
+  <section class="hero">
+    <p class="hero-eyebrow">this is for you,</p>
+    <h1 class="hero-name"><span class="accent">K</span>ate<sup>♡</sup></h1>
+    <p class="hero-last">Ash</p>
+    <div class="hero-rule"></div>
+    <p class="hero-tagline">my CPA, my future lawyer,<br>my greatest source of pride</p>
+  </section>
+
+  <section class="proud-section reveal">
+    <span class="section-tag">a message from the heart</span>
+    <h2 class="section-title">I am so incredibly<br>proud of you, Kate.</h2>
+    <p class="section-body">
+      You work harder than anyone I know. You show up every single day through the long nights, the difficult exams, the pressure that most people couldn't carry and you do it with this quiet, breathtaking grace. What you've already built, and what you're still building, is extraordinary. And I want you to know: <em>I see it allI love you my CPA!.</em>
+    </p>
+  </section>
+
+  <div class="cards">
+    <div class="card reveal">
+      <div class="card-badge">⚖️ &nbsp; Right Now</div>
+      <h3>Certified Public Accountant</h3>
+      <p>You didn't just pass you earned it. Every number, every audit, every late night studying paid off. You are a CPA and that title belongs to you forever.</p>
+    </div>
+    <div class="card reveal">
+      <div class="card-badge">🏛️ &nbsp; The Future</div>
+      <h3>Future Attorney at Law</h3>
+      <p>The courtroom has no idea what's coming. A woman who already mastered finance is now going to master the law too. Unstoppable doesn't even begin to cover it.</p>
+    </div>
+  </div>
+
+  <div class="letter-wrap reveal">
+    <div class="letter-deco">"</div>
+    <p class="letter-body">
+      Kate,<br><br>
+      You are building something <strong>remarkable</strong>. A CPA and a law degree not because it was easy, not because anyone handed it to you but because you decided you were worth it and you went and <strong>proved it</strong>.<br><br>
+      I watch you work and I think: <em>she has no idea how incredible she is.</em> But I do. I see the sacrifices you make. I see the discipline it takes. I see you choose growth over comfort, every single time.<br><br>
+      And on every hard day every moment you wonder if it's worth it I need you to know that someone is standing right behind you, <strong>so unbelievably proud</strong>, not of what you'll become, but of who you already are.<br><br>
+      That someone is me. And I'm not going anywhere.
+    </p>
+    <div class="letter-sig">always yours ♡</div>
+  </div>
+
+  <div class="promises reveal">
+    <h2 class="promise-title">What I promise you, always</h2>
+    <div class="promise-list">
+      <div class="promise-item">
+        <span class="promise-num">I.</span>
+        <div class="promise-content">
+          <h4>I will always be proud of you</h4>
+          <p>Not just when you win but on the hard days, the doubt days, the tired days. Always. Unconditionally.</p>
+        </div>
+      </div>
+      <div class="promise-item">
+        <span class="promise-num">II.</span>
+        <div class="promise-content">
+          <h4>I will always be right here</h4>
+          <p>Through every challenges, every milestone, every chapter of the life you're building. Right here. Not going anywhere.</p>
+        </div>
+      </div>
+      <div class="promise-item">
+        <span class="promise-num">III.</span>
+        <div class="promise-content">
+          <h4>I will celebrate every win like it's the biggest</h4>
+          <p>Because to me, it is. Every step you take is worth celebrating. You don't have to wait for the big moments I'm here for all of them.</p>
+        </div>
+      </div>
+      <div class="promise-item">
+        <span class="promise-num">IV.</span>
+        <div class="promise-content">
+          <h4>I will remind you of your worth</h4>
+          <p>Whenever you forget and even when you don't I'll be the voice that says: Kate Ash, you are extraordinary. You earned this. You belong here.</p>
+        </div>
+      </div>
+      <div class="promise-item">
+        <span class="promise-num">V.</span>
+        <div class="promise-content">
+          <h4>I will love you at every stage</h4>
+          <p>CPA Kate. Law student Kate. Attorney Kate. Every version of you that's coming I'm already proud of her too.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="final reveal">
+    <p class="final-big">Keep going,<br><span>Kate.</span><br>I've got you.</p>
+    <p class="final-sub">now and always, without question</p>
+    <div class="final-heart">💕</div>
+  </div>
+
+</div>
+
+<script>
+const cv  = document.getElementById('bg');
+const bctx = cv.getContext('2d');
+let W, H;
+
+function resize() { W = cv.width = window.innerWidth; H = cv.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+const pts = Array.from({ length: 55 }, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: 1 + Math.random() * 3,
+  sp: .2 + Math.random() * .45,
+  dr: (Math.random() - .5) * .25,
+  a: .04 + Math.random() * .18,
+  hue: 340 + Math.random() * 25,
+}));
+
+function drawBg() {
+  bctx.clearRect(0, 0, W, H);
+  for (const p of pts) {
+    bctx.beginPath();
+    bctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    bctx.fillStyle = `hsla(${p.hue},70%,75%,${p.a})`;
+    bctx.fill();
+    p.y -= p.sp; p.x += p.dr;
+    if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+    if (p.x < -10) p.x = W + 10;
+    if (p.x > W + 10) p.x = -10;
+  }
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: .12 });
+
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+const TRAIL = ['♡','✦','·','˚','✿'];
+let last = 0;
+document.addEventListener('mousemove', e => {
+  const now = Date.now();
+  if (now - last < 80) return;
+  last = now;
+  if (Math.random() > .45) return;
+  const el = document.createElement('div');
+  el.className = 'trail';
+  el.textContent = TRAIL[Math.floor(Math.random() * TRAIL.length)];
+  el.style.cssText = `left:${e.clientX + (Math.random()*16-8)}px;top:${e.clientY}px;color:hsl(${340+Math.random()*30},70%,65%)`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 820);
+});
+</script>
+</body>
+</html>
