@@ -44,6 +44,7 @@ canvas#bg {
   padding: 0 24px 120px;
 }
 
+/* ── HERO ── */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -52,7 +53,6 @@ canvas#bg {
   justify-content: center;
   text-align: center;
   padding: 80px 0 60px;
-  gap: 0;
 }
 
 .hero-eyebrow {
@@ -74,7 +74,6 @@ canvas#bg {
   letter-spacing: -.02em;
   opacity: 0;
   animation: up 1s .4s forwards;
-  position: relative;
 }
 .hero-name .accent { color: var(--rose); }
 .hero-name sup {
@@ -83,11 +82,6 @@ canvas#bg {
   vertical-align: super;
   font-style: normal;
   animation: pulse 1.8s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50%      { transform: scale(1.4); }
 }
 
 .hero-last {
@@ -120,13 +114,177 @@ canvas#bg {
   line-height: 1.6;
 }
 
+.scroll-hint {
+  opacity: 0;
+  animation: fadeIn 1s 2s forwards;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--rose);
+  font-size: .7rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.scroll-hint .arrow { animation: bounce 1.4s ease-in-out infinite; font-size: 1.2rem; }
+
+.surprise-section {
+  padding: 40px 0 20px;
+  text-align: center;
+}
+.surprise-section .section-tag {
+  font-size: .62rem;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 12px;
+  display: block;
+}
+.surprise-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.surprise-section .sub {
+  font-size: .85rem;
+  color: var(--mauve);
+  margin-bottom: 40px;
+  font-style: italic;
+}
+
+.surprise-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+@media (max-width: 500px) { .surprise-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.surprise-box {
+  aspect-ratio: 1;
+  position: relative;
+  cursor: pointer;
+  perspective: 800px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .5s, transform .5s;
+}
+.surprise-box.visible { opacity: 1; transform: translateY(0); }
+.surprise-box:nth-child(1) { transition-delay: 0s; }
+.surprise-box:nth-child(2) { transition-delay: .1s; }
+.surprise-box:nth-child(3) { transition-delay: .2s; }
+.surprise-box:nth-child(4) { transition-delay: .3s; }
+.surprise-box:nth-child(5) { transition-delay: .4s; }
+.surprise-box:nth-child(6) { transition-delay: .5s; }
+
+.box-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .7s cubic-bezier(.4,0,.2,1);
+  border-radius: 20px;
+}
+.surprise-box.flipped .box-inner { transform: rotateY(180deg); }
+
+.box-front, .box-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+}
+
+.box-front {
+  background: #fff;
+  border: 1.5px solid rgba(200,89,106,.18);
+  box-shadow: 0 4px 30px rgba(200,89,106,.1);
+  transition: box-shadow .3s;
+}
+.surprise-box:hover .box-front {
+  box-shadow: 0 8px 40px rgba(200,89,106,.22);
+}
+
+.box-front .box-emoji { font-size: 2.2rem; animation: float 3s ease-in-out infinite; }
+.box-front .box-label {
+  font-size: .62rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--rose);
+  font-weight: 500;
+}
+.box-front .tap-hint {
+  font-size: .58rem;
+  color: #c9a0aa;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.box-front::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 2px; height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(200,89,106,.25), transparent);
+  border-radius: 0;
+}
+.box-front::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%; transform: translateY(-50%);
+  height: 2px; width: 100%;
+  background: linear-gradient(to right, transparent, rgba(200,89,106,.25), transparent);
+  border-radius: 0;
+}
+
+.box-bow {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+  z-index: 2;
+  animation: bow-wiggle 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.box-back {
+  background: linear-gradient(135deg, var(--blush) 0%, #fff 100%);
+  border: 1.5px solid rgba(200,89,106,.2);
+  box-shadow: 0 8px 40px rgba(200,89,106,.18);
+  transform: rotateY(180deg);
+  text-align: center;
+}
+.box-back .back-emoji { font-size: 2rem; margin-bottom: 4px; }
+.box-back .back-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 4px;
+}
+.box-back .back-msg {
+  font-size: .72rem;
+  line-height: 1.6;
+  color: #7a4455;
+  font-weight: 300;
+}
+
 .proud-section {
   padding: 80px 0 40px;
   text-align: center;
 }
-
 .section-tag {
-  font-family: 'DM Sans', sans-serif;
   font-size: .62rem;
   font-weight: 500;
   letter-spacing: .22em;
@@ -135,7 +293,6 @@ canvas#bg {
   margin-bottom: 18px;
   display: block;
 }
-
 .section-title {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2rem, 6vw, 3.4rem);
@@ -145,7 +302,6 @@ canvas#bg {
   line-height: 1.2;
   margin-bottom: 20px;
 }
-
 .section-body {
   font-size: clamp(.88rem, 2vw, 1rem);
   line-height: 1.9;
@@ -173,14 +329,14 @@ canvas#bg {
   overflow: hidden;
   opacity: 0;
   transform: translateY(28px);
-  transition: transform .3s, box-shadow .3s;
+  transition: transform .3s, box-shadow .3s, opacity .6s;
 }
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-4px) !important;
   box-shadow: 0 12px 50px rgba(200,89,106,.14);
 }
-.card.visible { animation: up .7s forwards; }
-.card:nth-child(2) { animation-delay: .15s; }
+.card.visible { opacity: 1; transform: translateY(0); }
+.card:nth-child(2) { transition-delay: .15s; }
 
 .card-badge {
   display: inline-flex;
@@ -197,7 +353,6 @@ canvas#bg {
   color: var(--rose);
   margin-bottom: 18px;
 }
-
 .card h3 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.5rem;
@@ -205,16 +360,8 @@ canvas#bg {
   font-weight: 600;
   color: var(--ink);
   margin-bottom: 12px;
-  line-height: 1.2;
 }
-
-.card p {
-  font-size: .85rem;
-  line-height: 1.8;
-  color: #6b4450;
-  font-weight: 300;
-}
-
+.card p { font-size: .85rem; line-height: 1.8; color: #6b4450; font-weight: 300; }
 .card::after {
   content: '';
   position: absolute;
@@ -233,8 +380,10 @@ canvas#bg {
   box-shadow: 0 8px 60px rgba(200,89,106,.09);
   position: relative;
   opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s, transform .7s;
 }
-.letter-wrap.visible { animation: up .8s forwards; }
+.letter-wrap.visible { opacity: 1; transform: translateY(0); }
 
 .letter-deco {
   font-family: 'Great Vibes', cursive;
@@ -242,11 +391,8 @@ canvas#bg {
   color: var(--blush);
   position: absolute;
   top: 10px; left: 24px;
-  line-height: 1;
   pointer-events: none;
-  user-select: none;
 }
-
 .letter-body {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(1.05rem, 2.5vw, 1.28rem);
@@ -255,12 +401,7 @@ canvas#bg {
   color: var(--ink);
   font-weight: 300;
 }
-.letter-body strong {
-  font-style: normal;
-  font-weight: 600;
-  color: var(--rose);
-}
-
+.letter-body strong { font-style: normal; font-weight: 600; color: var(--rose); }
 .letter-sig {
   margin-top: 32px;
   text-align: right;
@@ -272,8 +413,10 @@ canvas#bg {
 .promises {
   margin: 60px 0;
   opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s, transform .7s;
 }
-.promises.visible { animation: up .8s forwards; }
+.promises.visible { opacity: 1; transform: translateY(0); }
 
 .promise-title {
   font-family: 'Cormorant Garamond', serif;
@@ -284,17 +427,14 @@ canvas#bg {
   color: var(--ink);
   margin-bottom: 36px;
 }
-
 .promise-list {
   display: flex;
   flex-direction: column;
-  gap: 0;
   border: 1px solid rgba(200,89,106,.14);
   border-radius: 20px;
   overflow: hidden;
   background: #fff;
 }
-
 .promise-item {
   display: flex;
   align-items: flex-start;
@@ -305,7 +445,6 @@ canvas#bg {
 }
 .promise-item:last-child { border-bottom: none; }
 .promise-item:hover { background: var(--light); }
-
 .promise-num {
   font-family: 'Cormorant Garamond', serif;
   font-size: 2rem;
@@ -315,7 +454,6 @@ canvas#bg {
   line-height: 1;
   min-width: 36px;
 }
-
 .promise-content h4 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.1rem;
@@ -323,21 +461,122 @@ canvas#bg {
   color: var(--ink);
   margin-bottom: 4px;
 }
+.promise-content p { font-size: .82rem; line-height: 1.7; color: #6b4450; font-weight: 300; }
 
-.promise-content p {
-  font-size: .82rem;
-  line-height: 1.7;
-  color: #6b4450;
-  font-weight: 300;
+.locket-section {
+  margin: 60px 0;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s, transform .7s;
 }
+.locket-section.visible { opacity: 1; transform: translateY(0); }
+
+.locket-wrap {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+.locket {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f9c4ce, #e89aac, #c8596a);
+  border: 3px solid rgba(200,89,106,.3);
+  box-shadow: 0 0 0 8px rgba(200,89,106,.08), 0 8px 40px rgba(200,89,106,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  margin: 0 auto 16px;
+  transition: transform .4s, box-shadow .4s;
+  animation: locket-pulse 2.5s ease-in-out infinite;
+}
+.locket:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 12px rgba(200,89,106,.12), 0 12px 50px rgba(200,89,106,.35);
+}
+.locket-label {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.4rem;
+  color: var(--mauve);
+  margin-bottom: 6px;
+}
+.locket-hint { font-size: .68rem; color: #c9a0aa; letter-spacing: .1em; text-transform: uppercase; font-style: italic; }
+
+.locket-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s;
+}
+.locket-modal.open { opacity: 1; pointer-events: all; }
+.locket-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26,15,10,.55);
+  backdrop-filter: blur(8px);
+}
+.locket-card {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: 28px;
+  padding: 48px 40px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  border: 1px solid rgba(200,89,106,.2);
+  box-shadow: 0 24px 80px rgba(200,89,106,.25);
+  transform: scale(.85) translateY(30px);
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.locket-modal.open .locket-card { transform: scale(1) translateY(0); }
+.locket-card .locket-card-emoji { font-size: 3.5rem; margin-bottom: 16px; display: block; }
+.locket-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-style: italic;
+  color: var(--rose);
+  margin-bottom: 16px;
+}
+.locket-card p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.9;
+  color: #5a3a42;
+}
+.locket-close {
+  margin-top: 28px;
+  display: inline-block;
+  background: var(--rose);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 10px 28px;
+  font-size: .8rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.locket-close:hover { background: var(--mauve); transform: scale(1.04); }
 
 .final {
   text-align: center;
   padding: 60px 0 0;
   opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s, transform .7s;
 }
-.final.visible { animation: up .8s forwards; }
-
+.final.visible { opacity: 1; transform: translateY(0); }
 .final-big {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2.5rem, 9vw, 5.5rem);
@@ -348,26 +587,50 @@ canvas#bg {
   margin-bottom: 20px;
 }
 .final-big span { color: var(--rose); }
-
 .final-sub {
   font-family: 'Great Vibes', cursive;
   font-size: clamp(1.3rem, 4vw, 2rem);
   color: var(--mauve);
   margin-bottom: 40px;
 }
+.final-heart { font-size: 3.5rem; animation: pulse 1.8s ease-in-out infinite; display: inline-block; }
 
-.final-heart {
-  font-size: 3.5rem;
-  animation: pulse 1.8s ease-in-out infinite;
-  display: inline-block;
+.confetti-piece {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  border-radius: 2px;
+  animation: confetti-fall var(--dur) ease-in forwards;
+}
+@keyframes confetti-fall {
+  0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(.5); opacity: 0; }
 }
 
 @keyframes up {
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes fadeIn {
-  to { opacity: 1; }
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.4); }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(8px); }
+}
+@keyframes bow-wiggle {
+  0%,100% { transform: translateX(-50%) rotate(-5deg); }
+  50%      { transform: translateX(-50%) rotate(5deg); }
+}
+@keyframes locket-pulse {
+  0%,100% { box-shadow: 0 0 0 8px rgba(200,89,106,.08), 0 8px 40px rgba(200,89,106,.25); }
+  50%      { box-shadow: 0 0 0 14px rgba(200,89,106,.14), 0 12px 50px rgba(200,89,106,.35); }
 }
 
 .trail {
@@ -395,13 +658,123 @@ canvas#bg {
     <p class="hero-last">Ash</p>
     <div class="hero-rule"></div>
     <p class="hero-tagline">my CPA, my future lawyer,<br>my greatest source of pride</p>
+    <div class="scroll-hint">
+      <span>open your surprises</span>
+      <span class="arrow">↓</span>
+    </div>
+  </section>
+
+  <section class="surprise-section">
+    <span class="section-tag">✦ specially for you ✦</span>
+    <h2>Little gifts from my heart</h2>
+    <p class="sub">tap each box to reveal your surprise</p>
+
+    <div class="surprise-grid">
+
+      <div class="surprise-box reveal" data-back-emoji="🌸" data-title="You Are Seen" data-msg="Every late night, every sacrifice — I see it all and I am in awe of you every single day.">
+        <div class="box-bow">🎀</div>
+        <div class="box-inner">
+          <div class="box-front">
+            <span class="box-emoji">✨</span>
+            <span class="box-label">Surprise #1</span>
+            <span class="tap-hint">tap to open</span>
+          </div>
+          <div class="box-back">
+            <span class="back-emoji">🌸</span>
+            <div class="back-title">You Are Seen</div>
+            <p class="back-msg">Every late night, every sacrifice — I see it all and I am in awe of you every single day.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="surprise-box reveal" data-back-emoji="💪" data-title="Strongest Person" data-msg="You carry more than most people could handle — and you do it with grace that takes my breath away.">
+        <div class="box-bow">🎀</div>
+        <div class="box-inner">
+          <div class="box-front">
+            <span class="box-emoji">🎁</span>
+            <span class="box-label">Surprise #2</span>
+            <span class="tap-hint">tap to open</span>
+          </div>
+          <div class="box-back">
+            <span class="back-emoji">💪</span>
+            <div class="back-title">Strongest Person</div>
+            <p class="back-msg">You carry more than most people could handle — and you do it with grace that takes my breath away.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="surprise-box reveal" data-back-emoji="⚖️" data-title="Future Attorney" data-msg="The courtroom has no idea what's coming for it. A CPA who becomes a lawyer? Completely unstoppable.">
+        <div class="box-bow">🎀</div>
+        <div class="box-inner">
+          <div class="box-front">
+            <span class="box-emoji">🏛️</span>
+            <span class="box-label">Surprise #3</span>
+            <span class="tap-hint">tap to open</span>
+          </div>
+          <div class="box-back">
+            <span class="back-emoji">⚖️</span>
+            <div class="back-title">Future Attorney</div>
+            <p class="back-msg">The courtroom has no idea what's coming for it. A CPA who becomes a lawyer? Completely unstoppable.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="surprise-box reveal" data-back-emoji="🌟" data-title="You Inspire Me" data-msg="Watching you choose growth over and over again has changed the way I see what's possible. You inspire me daily.">
+        <div class="box-bow">🎀</div>
+        <div class="box-inner">
+          <div class="box-front">
+            <span class="box-emoji">💫</span>
+            <span class="box-label">Surprise #4</span>
+            <span class="tap-hint">tap to open</span>
+          </div>
+          <div class="box-back">
+            <span class="back-emoji">🌟</span>
+            <div class="back-title">You Inspire Me</div>
+            <p class="back-msg">Watching you choose growth over and over again has changed the way I see what's possible. You inspire me daily.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="surprise-box reveal" data-back-emoji="💕" data-title="I'm Not Going Anywhere" data-msg="Through every exam, every hard day, every chapter — I am right here. Always. That's a promise I'll never break.">
+        <div class="box-bow">🎀</div>
+        <div class="box-inner">
+          <div class="box-front">
+            <span class="box-emoji">🌺</span>
+            <span class="box-label">Surprise #5</span>
+            <span class="tap-hint">tap to open</span>
+          </div>
+          <div class="box-back">
+            <span class="back-emoji">💕</span>
+            <div class="back-title">I'm Not Going Anywhere</div>
+            <p class="back-msg">Through every exam, every hard day, every chapter — I am right here. Always. That's a promise I'll never break.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="surprise-box reveal" data-back-emoji="👑" data-title="My Queen" data-msg="CPA. Future Attorney. The most remarkable woman I know. You are, in every way, a queen — and I am so lucky.">
+        <div class="box-bow">🎀</div>
+        <div class="box-inner">
+          <div class="box-front">
+            <span class="box-emoji">🌹</span>
+            <span class="box-label">Surprise #6</span>
+            <span class="tap-hint">tap to open</span>
+          </div>
+          <div class="box-back">
+            <span class="back-emoji">👑</span>
+            <div class="back-title">My Queen</div>
+            <p class="back-msg">CPA. Future Attorney. The most remarkable woman I know. You are, in every way, a queen — and I am so lucky.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </section>
 
   <section class="proud-section reveal">
     <span class="section-tag">a message from the heart</span>
     <h2 class="section-title">I am so incredibly<br>proud of you, Kate.</h2>
     <p class="section-body">
-      You work harder than anyone I know. You show up every single day through the long nights, the difficult exams, the pressure that most people couldn't carry and you do it with this quiet, breathtaking grace. What you've already built, and what you're still building, is extraordinary. And I want you to know: <em>I see it all, I love you my CPA!</em>
+      You work harder than anyone I know. You show up every single day through the long nights, the difficult exams, the pressure that most people couldn't carry and you do it with this quiet, breathtaking grace. What you've already built, and what you're still building, is extraordinary. And I want you to know: <em>I see it all. I love you my CPA!</em>
     </p>
   </section>
 
@@ -444,7 +817,7 @@ canvas#bg {
         <span class="promise-num">II.</span>
         <div class="promise-content">
           <h4>I will always be right here</h4>
-          <p>Through every challenges, every milestone, every chapter of the life you're building. Right here. Not going anywhere.</p>
+          <p>Through every exam, every milestone, every chapter of the life you're building. Right here. Not going anywhere.</p>
         </div>
       </div>
       <div class="promise-item">
@@ -471,6 +844,15 @@ canvas#bg {
     </div>
   </div>
 
+  <div class="locket-section reveal">
+    <span class="section-tag">✦ one last secret ✦</span>
+    <div class="locket-wrap" id="locketBtn">
+      <div class="locket">🔮</div>
+    </div>
+    <div class="locket-label">Our Secret</div>
+    <p class="locket-hint">tap the crystal to reveal</p>
+  </div>
+
   <div class="final reveal">
     <p class="final-big">Keep going,<br><span>Kate.</span><br>I've got you.</p>
     <p class="final-sub">now and always, without question</p>
@@ -479,11 +861,20 @@ canvas#bg {
 
 </div>
 
+<div class="locket-modal" id="locketModal">
+  <div class="locket-overlay" id="locketOverlay"></div>
+  <div class="locket-card">
+    <span class="locket-card-emoji">💌</span>
+    <h3>The secret I carry</h3>
+    <p>Every single day, I think about how lucky I am that you exist — that you're in this world doing extraordinary things. You don't just make me proud. You make me believe that everything is possible. I love you, Kate Ash. More than any page could ever say. 💕</p>
+    <button class="locket-close" id="locketClose">close with love ♡</button>
+  </div>
+</div>
+
 <script>
-const cv  = document.getElementById('bg');
+const cv = document.getElementById('bg');
 const bctx = cv.getContext('2d');
 let W, H;
-
 function resize() { W = cv.width = window.innerWidth; H = cv.height = window.innerHeight; }
 resize();
 window.addEventListener('resize', resize);
@@ -515,10 +906,68 @@ function drawBg() {
 drawBg();
 
 const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
 }, { threshold: .12 });
 
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+document.querySelectorAll('.surprise-box').forEach(box => {
+  box.addEventListener('click', () => {
+    if (box.classList.contains('flipped')) return;
+    box.classList.add('flipped');
+    burst(box);
+  });
+});
+
+function burst(el) {
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const colors = ['#c8596a','#f5dde2','#c9a84c','#8c4a58','#f9c4ce','#fff0f3'];
+  const emojis = ['♡','✦','✿','★','·','˚'];
+  for (let i = 0; i < 22; i++) {
+    const isEmoji = Math.random() > .6;
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 80 + Math.random() * 120;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 60;
+    piece.style.cssText = `
+      left:${cx}px; top:${cy}px;
+      width:${isEmoji ? 'auto' : (4 + Math.random() * 6) + 'px'};
+      height:${isEmoji ? 'auto' : (4 + Math.random() * 6) + 'px'};
+      background:${isEmoji ? 'none' : colors[Math.floor(Math.random() * colors.length)]};
+      font-size:${isEmoji ? '.9rem' : '0'};
+      ${isEmoji ? `content:'${emojis[Math.floor(Math.random() * emojis.length)]}';` : ''}
+      --dx:${dx}px; --dy:${dy}px;
+      --rot:${Math.random() * 720 - 360}deg;
+      --dur:${.6 + Math.random() * .5}s;
+    `;
+    if (isEmoji) piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 1200);
+  }
+}
+
+const locketBtn = document.getElementById('locketBtn');
+const locketModal = document.getElementById('locketModal');
+const locketOverlay = document.getElementById('locketOverlay');
+const locketClose = document.getElementById('locketClose');
+
+function openLocket() {
+  locketModal.classList.add('open');
+  burst({ getBoundingClientRect: () => ({ left: window.innerWidth/2 - 60, top: window.innerHeight/2 - 60, width: 120, height: 120 }) });
+}
+function closeLocket() { locketModal.classList.remove('open'); }
+
+locketBtn.addEventListener('click', openLocket);
+locketOverlay.addEventListener('click', closeLocket);
+locketClose.addEventListener('click', closeLocket);
 
 const TRAIL = ['♡','✦','·','˚','✿'];
 let last = 0;
@@ -537,4 +986,3 @@ document.addEventListener('mousemove', e => {
 </script>
 </body>
 </html>
-
